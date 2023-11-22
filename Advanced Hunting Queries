@@ -1,0 +1,10 @@
+Let's do some guerilla-hunting!
+
+Case 1 - Your org received a phishing e-mail containing some bad URL's. The URL was not yet tagged by Defender and the mail has not yet got ZAP'ed - how do you know which user clicked the links?
+Collect the URL's from the phishing e-mail and do this;
+
+UrlClickEvents
+| where Url contains "paste your url here"
+| where Timestamp > ago(7d)
+| join EmailEvents on NetworkMessageId,  $left.AccountUpn == $right.RecipientEmailAddress
+| project Timestamp, Url, IPAddress, ActionType, AccountUpn, ReportId, NetworkMessageId, ThreatTypes, DeliveryLocation
